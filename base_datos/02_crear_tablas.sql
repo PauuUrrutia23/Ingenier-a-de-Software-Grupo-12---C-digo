@@ -16,12 +16,6 @@ CREATE TABLE administrador (
     PRIMARY KEY (id_admin)
 );
 
-CREATE TABLE categoria_proyecto (
-    id_categoria BIGSERIAL,
-    tipo VARCHAR(40) NOT NULL UNIQUE,
-    PRIMARY KEY (id_categoria)
-);
-
 CREATE TABLE consulta (
     id_consulta BIGSERIAL,
     mensaje TEXT NOT NULL,
@@ -77,19 +71,20 @@ CREATE TABLE proyecto (
     region VARCHAR(80) NOT NULL,
     ubicacion_geografica VARCHAR(150) NOT NULL,
     anio_ejecucion SMALLINT NOT NULL,
-    estado_publicacion VARCHAR(20) NOT NULL,
-    id_categoria BIGINT NOT NULL,
+    estado_publicacion VARCHAR(20) NOT NULL CHECK (
+        estado_publicacion IN ('borrador', 'publicado')
+    ),
+    categoria VARCHAR(50) NOT NULL CHECK (
+        categoria IN ('Habitacional', 'Industrial', 'Agricola')
+    ),
     id_admin BIGINT NOT NULL,
+
     PRIMARY KEY (id_proyecto),
-    FOREIGN KEY (id_categoria)
-        REFERENCES categoria_proyecto(id_categoria)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
+
     FOREIGN KEY (id_admin)
         REFERENCES administrador(id_admin)
         ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-    CHECK (estado_publicacion IN ('Borrador', 'Publicado'))
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE imagen_proyecto (
