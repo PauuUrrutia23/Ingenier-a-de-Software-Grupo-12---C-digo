@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\DB;
 
 class Colaborador extends Model
 {
@@ -34,8 +35,17 @@ class Colaborador extends Model
     }
 
     // -------------------------------------------------------------------------
-    // Accessors
+    // Mutators / Accessors
     // -------------------------------------------------------------------------
+
+    protected function logotipo(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => $value === null
+                ? null
+                : DB::raw("decode('" . bin2hex($value) . "', 'hex')"),
+        );
+    }
 
     /**
      * Retorna el logotipo BYTEA como Data URI lista para usar en <img src="...">.
